@@ -21,6 +21,8 @@ the assignment 3 requirement. Assignment 3
 #include <sys/shm.h>
 #include <sys/stat.h>
 
+#include "queue.h"
+
 typedef struct {
    int pid;
    float arrive_t, burst_t;
@@ -40,7 +42,7 @@ typedef struct RR_Params {
 pthread_attr_t attr;
 
 void initializeData(ThreadParams *params, int argc, char** argv);
-void rr_serve(process* proc_list, int list_len, int process_idx, int quant);
+double rr_serve(process* proc_list, int list_len, int process_idx, int quant);
 
 
 /* this function calculates Round Robin (RR) with a time quantum of 4, writes waiting time and turn-around time to the RR */
@@ -58,7 +60,7 @@ void *worker1(void *params)
 	 if (proc.arrive_t <= current_time) {
 	    //process has arrived
 	    // TODO: one process needs to be served and the others wait
-	    rr_serve(tp->process_list, tp->num_processes, n, tp->timequant);
+	    double duration = rr_serve(tp->process_list, tp->num_processes, n, tp->timequant);
 	       
 	 }
       }
@@ -74,6 +76,19 @@ void *worker2()
 /* this main function creates named pipe and threads */
 int main(int argc, char** argv)
 {
+
+   Queue* queue = queue_init(1000);
+
+   enqueue(queue, 10);
+   enqueue(queue, 20);
+   enqueue(queue, 30);
+   enqueue(queue, 40);
+
+   printf("%d dequeued from queue\n\n",
+	 dequeue(queue));
+
+   return 0;
+
 	/* creating a named pipe(RR) with read/write permission */
 	 ThreadParams params; 	 
 
@@ -98,7 +113,6 @@ int main(int argc, char** argv)
 }
 
 double rr_serve(process* proc_list, int list_len, int process_idx, int quant) {
-   double  
    if (proc_list[process_idx].burst_t < quant) {
       proc_list[process_idx].burst_t = 0;
 
