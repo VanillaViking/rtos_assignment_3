@@ -41,6 +41,8 @@ typedef struct RR_Params {
 
 pthread_attr_t attr;
 
+//TODO: revert optimisation level in makefile
+
 void initializeData(ThreadParams *params, int argc, char** argv);
 double rr_serve(process* proc_list, int list_len, int process_idx, int quant);
 
@@ -49,22 +51,37 @@ double rr_serve(process* proc_list, int list_len, int process_idx, int quant);
 void *worker1(void *params)
 {
    ThreadParams *tp = (ThreadParams*) params;
+   Queue *ready_queue = queue_init(10);
 
    int finished_processes = 0;
    double current_time = 0;
 
    while (finished_processes < 7) {
+      double duration = tp->timequant;
+      int selected_process = -1;
+
+      if (!is_empty(ready_queue)) {
+	 selected_process = dequeue(ready_queue);
+	 // allow the selected process to run, while putting other ready processes on wait
+	 duration = rr_serve(tp->process_list, tp->num_processes, selected_process, tp->timequant);
+      }
+      current_time += duration;
+
+      // check if any more processes are ready
       for (int n = 0; n < tp->num_processes; n++) {
 	 process proc = tp->process_list[n];
 
 	 if (proc.arrive_t <= current_time) {
 	    //process has arrived
-	    // TODO: one process needs to be served and the others wait
-	    double duration = rr_serve(tp->process_list, tp->num_processes, n, tp->timequant);
-	       
+	    enqueue(ready_queue, n);
 	 }
       }
-      current_time += tp->timequant;
+      if (selected_process >= 0 && tp->process_list[selected_process].burst_t > 0) {
+	 enqueue(ready_queue, selected_process);
+      } else if (selected_process >= 0) {
+	 // the process has finished executing
+	 finished_processes++;
+      }
    }
 }
 
@@ -77,18 +94,6 @@ void *worker2()
 int main(int argc, char** argv)
 {
 
-   Queue* queue = queue_init(1000);
-
-   enqueue(queue, 10);
-   enqueue(queue, 20);
-   enqueue(queue, 30);
-   enqueue(queue, 40);
-
-   printf("%d dequeued from queue\n\n",
-	 dequeue(queue));
-
-   return 0;
-
 	/* creating a named pipe(RR) with read/write permission */
 	 ThreadParams params; 	 
 
@@ -100,7 +105,9 @@ int main(int argc, char** argv)
 	 int thread_a_exit = pthread_create(&(tid[0]), &attr, &worker1, (void*)(&params));
 	 int thread_b_exit = pthread_create(&(tid[1]), &attr, &worker2, (void*)(&params));
 
-	 if (thread_a_exit < 1 || thread_b_exit < 1) {
+	 if (thread_a_exit != 0 || thread_b_exit != 0) {
+	    printf("%d", thread_a_exit);
+	    printf("%d", thread_b_exit);
 	    fprintf(stderr, "Failed to create threads\n");
 	    exit(1);
 	 }
@@ -113,18 +120,20 @@ int main(int argc, char** argv)
 }
 
 double rr_serve(process* proc_list, int list_len, int process_idx, int quant) {
+   double duration = quant + 0.0;
    if (proc_list[process_idx].burst_t < quant) {
-      proc_list[process_idx].burst_t = 0;
-
+      duration = proc_list[process_idx].burst_t; 
    }
 
    for (int n = 0; n < list_len; n++) {
       if (n == process_idx) {
-	 proc_list[n].burst_t -= quant;
+	 proc_list[n].burst_t -= duration;
       } else {
-	 proc_list[n].wait_t += quant;
+	 proc_list[n].wait_t += duration;
       }
    }
+
+   return duration
 }
 
 
