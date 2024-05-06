@@ -1,0 +1,2 @@
+Wait Time: 15.29
+Turnaround Time: 20.57
