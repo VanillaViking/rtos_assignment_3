@@ -37,7 +37,8 @@ int main(int argc, char* argv[])
 {
 	//Register Ctrl+c(SIGINT) signal and call the signal handler for the function.
 	//add your code here
-
+	signal(SIGINT, SignalHandler);
+	
 	int i;
 	// reference number
 	int REFERENCESTRINGLENGTH=24;
