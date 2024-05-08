@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -Wall -lpthread -lrt -g -O0
+CFLAGS = -Wall -lpthread -lrt
 
 all: queue.o 
 	$(CC) $(CFLAGS) -o assign3_part1  queue.o Assignment3_template_Prg_1.c

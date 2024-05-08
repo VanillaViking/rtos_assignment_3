@@ -43,8 +43,6 @@ typedef struct RR_Params {
 
 pthread_attr_t attr;
 
-//TODO: revert optimisation level in makefile
-
 void initializeData(ThreadParams *params, int argc, char** argv);
 double rr_serve(process* proc_list, int process_idx, int quant, double current_time);
 void sort(process p[], int num);
