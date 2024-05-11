@@ -40,6 +40,8 @@ Once waiting times and turnaround times are calculated for each process, the ave
 
 === Round Robin Scheduling (Thread 1)
 
+The round robin algorithm presented in this assignment firstly initiates a ready queue as well as a current time variable. The current time variable keeps track of the time that has passed since the beginning of the algorithm. The ready queue is the data structure that holds all the processes that have arrived and are ready to be run. When a process has the same arrival time as the current time, it is added into the ready queue.
+
 === Output to file (Thread 2)
 
 === Results

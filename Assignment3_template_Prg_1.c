@@ -93,7 +93,6 @@ void *worker1(void *params)
    float total_turnaround = 0;
 
    for (int i = 0; i < tp->num_processes; i++) {
-      /* printf("[%d] wait: %.2f, turnaround: %.2f\n", tp->process_list[i].pid, tp->process_list[i].wait_t, tp->process_list[i].turn_around_t); */
       total_wait += tp->process_list[i].wait_t;
       total_turnaround += tp->process_list[i].turn_around_t;
    }
@@ -101,7 +100,6 @@ void *worker1(void *params)
    avg_wait = total_wait / tp->num_processes;
    avg_turnaround = total_turnaround / tp->num_processes;
 
-   /* printf("[AVG] wait: %.2f, turnaround: %.2f\n", avg_wait, avg_turnaround); */
    int fifo_fd = open(tp->fifo_filename, O_WRONLY);
 
    char message[80];
