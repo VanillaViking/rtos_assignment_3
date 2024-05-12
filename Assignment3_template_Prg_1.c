@@ -104,9 +104,14 @@ void *worker1(void *params)
 
    char message[80];
    sprintf(message, "%.2f, %.2f", avg_wait, avg_turnaround);
-   write(fifo_fd, message, strlen(message)+1);
+   int write_result = write(fifo_fd, message, strlen(message)+1);
+   if (write_result <= 0) {
+      fprintf(stderr, "Failed to write to fifo.");
+      exit(1);
+   }
    close(fifo_fd);
-
+   
+   return NULL;
 }
 
 /* reads the waiting time and turn-around time through the RR and writes to text file */
@@ -117,7 +122,10 @@ void *worker2(void* params)
    int fifo_fd = open(tp->fifo_filename, O_RDONLY);
 
    char message[80];
-   read(fifo_fd, message, sizeof(message));
+   if (read(fifo_fd, message, sizeof(message)) <= 0) {
+      fprintf(stderr, "Failed to read from fifo.");
+      exit(1);
+   }
 
    char* delim = ",";
 
@@ -129,6 +137,8 @@ void *worker2(void* params)
    printf("Wait Time: %.2f\nTurnaround Time: %.2f\n", wait_t, turnaround_t);
    printf("written to file %s\n", tp->output_filename);
    fprintf(output_fp, "Wait Time: %.2f\nTurnaround Time: %.2f\n", wait_t, turnaround_t);
+
+   return NULL;
 }
 
 /* this main function creates named pipe and threads */

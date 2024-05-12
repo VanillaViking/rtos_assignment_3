@@ -39,7 +39,6 @@ int main(int argc, char* argv[])
 	//add your code here
 	signal(SIGINT, SignalHandler);
 	
-	int i;
 	// reference number
 	int REFERENCESTRINGLENGTH=24;
 	//Argument from the user on the frame size, such as 4 frameSize in the document
@@ -49,36 +48,46 @@ int main(int argc, char* argv[])
 	//Reference string from the assignment outline
 	int referenceString[24] = {7,0,1,2,0,3,0,4,2,3,0,3,0,3,2,1,2,0,1,7,0,1,7,5};
 	//Next position to write a new value to.
-	int nextWritePosition = 0;
+	/* int nextWritePosition = 0; */
 	//Boolean value for whether there is a match or not.
-	bool match = false;
+	bool match = 0;
 	//Current value of the reference string.
 	int currentValue;
 
 	//Initialise the empty frame with -1 to simulate empty values.
-	for(i = 0; i < frameSize; i++)
+	for(int i = 0; i < frameSize; i++)
 	{
 		frame[i] = -1;
 	}
 
 	//Loop through the reference string values.
-	for(i = 0; i < REFERENCESTRINGLENGTH; i++)
+	for(currentValue = 0; currentValue < REFERENCESTRINGLENGTH; currentValue++)
 	{
-		int keep_value = 0;
+		
+		match = false;
 		for(int n = 0; n < frameSize; n++)  
 		{  
-			if(referenceString[i] == frame[n]) //if the page = the current fame content/value 
+			if(referenceString[currentValue] == frame[n]) //if the page = the current fame content/value 
 			{  
-				keep_value++;  		// indciate "don't change this frame content/value" 
+				match = true;  		// indciate "don't change this frame content/value"H 
 				pageFaults--;  // -1 of pageFaults to balance the pageFaults++ 
 			}  
 		}  
         pageFaults++;  // increase 1 regardless "referenceString[m] == frame[n]"
 	
-	if (keep_value == 0) {
+	if (!match) {
+
+		printf("FAULT:");
+		printf("\nCurrent page: %d\n", referenceString[currentValue]);
+		printf("Frames:\n");
+		for (int x = 0; x < frameSize; x++) {
+			printf("%d\n", frame[x]);
+		}
+		printf("\n");
+
 		if((pageFaults <= frameSize)) // string is counted within the 1st 3 frameSize  
 		{  
-			frame[i] = referenceString[i]; //just load the currnet page number into frame[m] 
+			frame[currentValue] = referenceString[currentValue]; //just load the currnet page number into frame[m] 
 		}  
 		else // neither the page = farme content/value nor the 1st 3 frameSize!
 		{  
@@ -86,15 +95,11 @@ int main(int argc, char* argv[])
 Ex: 3%3 = 0,frame[0]; 4%3=1,frame[1]; 5%3=2,frame[2]; 6%3=0,frame[0]; 7%3=1,frame[1]; 
 8%3=2,frame[2]; 9%3=0,frame[0] with the pageFaults 3,4,5,6,7,8,9 . . . . . .  
 */
-			frame[(pageFaults - 1) % frameSize] = referenceString[i]; 
+			frame[(pageFaults - 1) % frameSize] = referenceString[currentValue]; 
+
 		}  
 	}
 
-	printf("\nCurrent page: %d\n", referenceString[i]);
-	printf("Frames:\n");
-	for (int x = 0; x < frameSize; x++) {
-		printf("%d\n", frame[x]);
-	}
 	}
 
 	//Sit here until the ctrl+c signal is given by the user.
