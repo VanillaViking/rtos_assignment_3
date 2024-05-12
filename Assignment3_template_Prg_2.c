@@ -77,7 +77,7 @@ int main(int argc, char* argv[])
 	
 	if (!match) {
 
-		printf("FAULT:");
+		printf("FAULT %d:", pageFaults);
 		printf("\nCurrent page: %d\n", referenceString[currentValue]);
 		printf("Frames:\n");
 		for (int x = 0; x < frameSize; x++) {

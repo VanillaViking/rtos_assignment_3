@@ -82,15 +82,23 @@ In the worker2 thread, this filename can be used to read the contents that have 
   caption: [Round Robin wait & turnaround times],
 ) <avgs>
 
-
+The results show that the average wait time for all 7 processes with a quant time of 7 is 15.29 ms. The average turnaround time for the processes is 20.57 ms. In a round robin implementation, no process should wait more than $(n -1) q$, or 24ms in this case. If we observe the process that waited the longest, 22 ms by process 4, we see that it is under 24ms. Generally, round robin scheduling has a higher average turnaround time compared to another scheduling algorithm such as SJF. However, it is more responsive, due to the fair nature of round robin scheduling, ensuring that all processes will get a slice of CPU time soon.
 
 = Program 2
 
 == Outline
 
+Program 2 implements a FIFO based page replacement algorithm. In this algorithm, the earliest page that was loaded into the frame is replaced with a new page in the event of a page fault.
+
+After printing all faults that occured, the program waits for the SIGINT signal from the system, which the user can administer by pressing Ctrl+C on the keyboard. The program handles this signal by printing the total number of page faults and exiting.
+
 == Implementation
 
 === Memory management
+
+The algorithm begins by initialising all elements in the frame to -1, signifying that it is empty. 
+It then begins looping through all reference string values, checking if the value exists within the frame values or not. If the value does not exist, then it means that there is a page fault. The oldest value in the frame can be kept track of by the page fault count, since we replace values in the frame in a sequential order
+
 
 === Signal (Ctrl-C)
 
