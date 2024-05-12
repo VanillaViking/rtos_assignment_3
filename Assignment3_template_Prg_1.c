@@ -137,6 +137,7 @@ void *worker2(void* params)
    printf("Wait Time: %.2f\nTurnaround Time: %.2f\n", wait_t, turnaround_t);
    printf("written to file %s\n", tp->output_filename);
    fprintf(output_fp, "Wait Time: %.2f\nTurnaround Time: %.2f\n", wait_t, turnaround_t);
+   fclose(output_fp);
 
    return NULL;
 }
