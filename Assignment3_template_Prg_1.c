@@ -60,7 +60,8 @@ void *worker1(void *params)
    while (finished_processes < 7) {
       double duration = tp->timequant;
       int selected_process = -1;
-
+      
+      // serve a process for a time quantum, or until it ends
       if (!is_empty(ready_queue)) {
 	 selected_process = dequeue(ready_queue);
 	 duration = rr_serve(tp->process_list, selected_process, tp->timequant, current_time);
@@ -77,6 +78,7 @@ void *worker1(void *params)
       }
       
       // put currently selected process back in queue if it is yet to finish
+      // it is important that this is done AFTER pushing new processes into the queue
       if (selected_process >= 0) {
 	 if (tp->process_list[selected_process].burst_t > 0) {
 	    enqueue(ready_queue, selected_process);
