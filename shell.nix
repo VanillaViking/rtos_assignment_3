@@ -3,5 +3,5 @@
 with pkgs;
 
 mkShell {
-buildInputs = [ gnumake gcc gdb typst ]; # your dependencies here
+buildInputs = [ gnumake zip gcc gdb typst ]; # your dependencies here
 }

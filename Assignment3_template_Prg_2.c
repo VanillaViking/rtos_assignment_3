@@ -18,8 +18,6 @@
 #include <sys/stat.h>
 #include <signal.h>
 
-#include "queue.h"
-
 //Number of pagefaults in the program
 int pageFaults = 0;
 
@@ -85,15 +83,6 @@ int main(int argc, char* argv[])
         pageFaults++;  // increase 1 regardless "referenceString[m] == frame[n]"
 	
 	if (!match) {
-
-		printf("FAULT %d:\n", pageFaults);
-		/* printf("Current page: %d\n", referenceString[currentValue]); */
-		printf("Frames: ");
-		for (int x = 0; x < frameSize; x++) {
-			printf("%d ", frame[x]);
-		}
-		printf("\n\n");
-
 		if((pageFaults <= frameSize)) // string is counted within the 1st 3 frameSize  
 		{  
 			frame[currentValue] = referenceString[currentValue]; //just load the currnet page number into frame[m] 
@@ -107,6 +96,14 @@ Ex: 3%3 = 0,frame[0]; 4%3=1,frame[1]; 5%3=2,frame[2]; 6%3=0,frame[0]; 7%3=1,fram
 			frame[(pageFaults - 1) % frameSize] = referenceString[currentValue]; 
 
 		}  
+
+		printf("FAULT %d:\n", pageFaults);
+		/* printf("Current page: %d\n", referenceString[currentValue]); */
+		printf("Frames: ");
+		for (int x = 0; x < frameSize; x++) {
+			printf("%d ", frame[x]);
+		}
+		printf("\n\n");
 	}
 
 	}
