@@ -109,7 +109,7 @@ The SIGINT signal is delivered to a process when a user presses Ctrl+C in the co
   caption: [FIFO page replacement faults],
 ) <results2>
 
-The results show that 11 page faults occur using a FIFO page replacement algorithm with 4 frames. Initially, there are 4 page faults consecutively, because the frame did not contain any cached pages. Once the frame started to fill up, the frequency of page faults dropped.
+The results show that 11 page faults occur using a FIFO page replacement algorithm with 4 frames. Initially, there are 4 page faults consecutively, because the frame did not contain any cached pages. Once the frame started to fill up, the frequency of page faults dropped. A FIFO page replacement algorithm is a simple solution to determine which page to replace. However it suffers from Belady's Anomaly, which is a phenomenon where increasing the page frames would increase the page faults rather than decreasing them. Other algorithms such as Least Recently Used (LRU) do not suffer from this as they assign a priority to every page.
 
 = Conclusion
 
