@@ -37,7 +37,16 @@ int main(int argc, char* argv[])
 {
 	//Register Ctrl+c(SIGINT) signal and call the signal handler for the function.
 	//add your code here
-	signal(SIGINT, SignalHandler);
+	struct sigaction act, oact;		
+	act.sa_handler = SignalHandler;
+	sigemptyset(&act.sa_mask);
+	act.sa_flags = 0;
+
+	if (sigaction(SIGINT, &act, &oact) < 0) {
+		fprintf(stderr, "could not set signal action\n");
+		exit(1);
+	}
+
 	
 	// reference number
 	int REFERENCESTRINGLENGTH=24;
@@ -77,13 +86,13 @@ int main(int argc, char* argv[])
 	
 	if (!match) {
 
-		printf("FAULT %d:", pageFaults);
-		printf("\nCurrent page: %d\n", referenceString[currentValue]);
-		printf("Frames:\n");
+		printf("FAULT %d:\n", pageFaults);
+		/* printf("Current page: %d\n", referenceString[currentValue]); */
+		printf("Frames: ");
 		for (int x = 0; x < frameSize; x++) {
-			printf("%d\n", frame[x]);
+			printf("%d ", frame[x]);
 		}
-		printf("\n");
+		printf("\n\n");
 
 		if((pageFaults <= frameSize)) // string is counted within the 1st 3 frameSize  
 		{  

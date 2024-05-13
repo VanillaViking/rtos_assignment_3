@@ -97,11 +97,20 @@ After printing all faults that occured, the program waits for the SIGINT signal 
 === Memory management
 
 The algorithm begins by initialising all elements in the frame to -1, signifying that it is empty. 
-It then begins looping through all reference string values, checking if the value exists within the frame values or not. If the value does not exist, then it means that there is a page fault. The oldest value in the frame can be kept track of by the page fault count, since we replace values in the frame in a sequential order
-
+It then begins looping through all reference string values, checking if the value exists within the frame values or not. If the value does not exist, then it means that there is a page fault. The oldest value in the frame can be kept track of by the page fault count, since we replace values in the frame _only_ when there is a page fault, and in a sequential order. This frame value can then be replaced by the new page. As a result of the algorithm, the first page that is placed in the frame will also be the first page to be swapped out.
 
 === Signal (Ctrl-C)
 
+The SIGINT signal is delivered to a process when a user presses Ctrl+C in the console. The default action is to terminate the process. This action can be overriden and the signal can be handled differently. This is done through the ```c sigaction()``` function. It's parameteres are the signal to be handled, and a sigaction struct that describes the action to be taken when the signal is received. It includes the handler function that contains the code to be executed.
+
 === Results
+#figure(
+  image("part2_results.png", width: 30%),
+  caption: [FIFO page replacement faults],
+) <results2>
+
+The results show that 11 page faults occur using a FIFO page replacement algorithm with 4 frames. Initially, there are 4 page faults consecutively, because the frame did not contain any cached pages. Once the frame started to fill up, the frequency of page faults dropped.
 
 = Conclusion
+
+In conclusion, implementing algorithms such as round robin CPU scheduling, as well as FIFO page replacement was beneficial in my understanding of how operating systems such as linux work. They uncovered the method by which compuer systems manage resoucres efficiently, which provided insights into how processes are managed and memory is scheduled. It also helps with designing efficient systems, by understanding trade-offs between various metrics like throughput, respons etime, and fairness.
